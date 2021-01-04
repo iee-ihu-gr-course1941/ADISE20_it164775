@@ -1,6 +1,6 @@
 <?php
-    require_once "dbconnect.php";
-    require_once "auth.php";
+    require_once "lib/dbconnect.php";
+    require_once "lib/auth.php";
 
     $method = $_SERVER['REQUEST_METHOD'];
     $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
@@ -9,6 +9,9 @@
     switch ($r=array_shift($request)) {
         case 'login':
                 handleLogin($method, $input);
+                break;
+        case 'logout': 
+                handleLogout($method, $input);
                 break;
         default:  
                 header("HTTP/1.1 404 Not Found");
@@ -24,4 +27,15 @@
             }
     }
   
+
+    function handleLogout($method, $input) {
+        if($method == 'POST') {
+                logout($input["username"]);
+                header("HTTP/1.1 200 OK");
+                exit;
+        } else {
+                header("HTTP/1.1 404 Not Found");
+                exit;
+        }
+    }
 ?>
