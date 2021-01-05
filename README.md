@@ -34,5 +34,36 @@
 Η εφαρμογή εχει υλοποιηθεί πλήρως.
 
 ~ΒΑΣΗ ΠΑΙΧΝΙΔΙΟΥ
+Η βάση έχει τους εξής πίνακες: board(id,color,thesi,blocked)
+                               boardstatus(id,loggedInUsers,next,color1,color2,time,zari1,zari2,apomenoun,winnner,game_status)
+                               initboard(id,color,thesi,blocked)
+                               users(id,username,passwd,reg_date,connected)
+
+~ΠΕΡΙΓΡΑΦΗ API
+
+  METHODS:
+  
+  *login
+  Χρησιμοοιείται για την σύνδεση τών χρηστών.
+  POST /login
+  
+  *logout
+  Χρησιμοποιείται για την αποσύνδεση των χρηστών.
+  POST /logout
+  
+  *start
+  Χρησιμοποιείται για την εκκίνηση τού παιχνιδιού.
+  POST /start
+  
+  *move
+  Χρησιμοποιείται για την μετακίνηση τών πουλιών.
+  POST /move
+  
+  *board
+  Χρησιμοποιείται για να δούμε την κατάσταση του board την συγκεκριμένη χρονική στιγμή.
+  GET /board
+  
+  
+  
 
 
