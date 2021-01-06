@@ -77,6 +77,7 @@
     function handleMove($method, $input) {
         if($method == 'POST') {
                 header('Content-Type: application/json');
+                print json_encode(movesAreValid($input["pouli"], $input["thesi"], $input["xrwma"]));
         } else {
                 header("HTTP/1.1 404 Not Found");
                 exit;

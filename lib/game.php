@@ -166,8 +166,147 @@ function playingNow() {
     }
 }
 
+function pouliThesi($pouli) {
+    global $mysqli;
+    $sql = "SELECT * FROM board WHERE id=".$pouli."";
+    if($result = $mysqli->query($sql)) {
+        if($row = $result->fetch_assoc()) {
+                return $row["thesi"];
+        }
+    }	
+    else {
+            echo "Error1: ".$mysqli->error();
+    }
+}
 
+function setBlocked($pouli, $blocked) {
+    global $mysqli;
 
+    $sql = "UPDATE board SET blocked=".$blocked." WHERE id=".$pouli."";
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        return false;
+    }    
+
+    return true;
+}
+
+function executeMove($pouli, $thesi, $paliaThesi, $xrwma) {
+    global $mysqli;
+    $blocked = getBlocked($xrwma);
+    $antipaloiTheseis = $blocked["antipalesTheseis"];
+    $theseis = $blocked["theseis"];
+
+    if(count($antipaloiTheseis[$thesi]) == 1) {
+        $antipaloPouli = $antipaloiTheseis[$thesi][0];
+        setBlocked($antipaloPouli["id"], 1);
+    }
+
+    if(count($antipaloiTheseis[$paliaThesi]) == 1 && count($theseis[$paliaThesi]) == 1) {
+        $antipaloPouli = $antipaloiTheseis[$paliaThesi][0];
+        setBlocked($antipaloPouli["id"], 0);
+    }
+
+    $sql = "UPDATE board SET thesi=".$thesi." WHERE id=".$pouli."";
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        return false;
+    }    
+    return true;
+}
+
+function getBlocked($xrwma) {
+    global $mysqli;
+
+    $sql = "SELECT * FROM board";
+    if ($result = $mysqli->query($sql)) {
+        $boardWhite = array();
+        $boardRed = array();
+        for ($i = 1; $i <= 24; $i++) {
+            $boardRed[$i] = [];
+            $boardWhite[$i] = [];
+        }
+
+        while ($row = $result->fetch_assoc()) {
+            if ($row["color"] == 'red') {
+                $boardRed[$row["thesi"]][] = ["id" => $row["id"], "color" => $row["color"], "blocked" => $row["blocked"]];
+            } else {
+                $boardWhite[$row["thesi"]][] = ["id" => $row["id"], "color" => $row["color"], "blocked" => $row["blocked"]];
+            }
+        }
+
+        if($xrwma == "red") {
+            return ["antipalesTheseis" => $boardWhite, "theseis" => $boardRed];
+        } else {
+            return ["antipalesTheseis" => $boardRed, "theseis" => $boardWhite];
+        }
+    }
+}
+
+function getBoardStatus() {
+    global $mysqli;
+
+    $sql = "SELECT * FROM boardstatus";
+    if($result = $mysqli->query($sql)) {
+        if($row = $result->fetch_assoc()) {
+                return ["next"=> $row["next"], "apomenoun"=>$row["apomenoun"]];
+        }
+    }	
+    else {
+            echo "Error1: ".$mysqli->error();
+    }
+}
+
+function zariPouPaixtike() {
+    global $mysqli;
+
+    $sql = "SELECT * FROM boardstatus";
+    if($result = $mysqli->query($sql)) {
+        if($row = $result->fetch_assoc()) {
+                return $row["paixtike"];
+        }
+    }	
+    else {
+            echo "Error1: ".$mysqli->error();
+    }
+}
+
+function updateBoardStatus($zari) {
+    global $mysqli;
+
+    $boardStatus = getBoardStatus();
+    $apomenoun = $boardStatus["apomenoun"];
+    if($apomenoun > 0) {
+        $apomenoun--;
+    }
+
+    $sql = "UPDATE boardstatus SET apomenoun=".$apomenoun.", paixtike='".$zari."' WHERE 1";
+
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        echo "(".$mysqli->errno.") ".$mysqli->error;
+    }    
+    
+    $boardStatus = getBoardStatus();
+    
+    if($apomenoun == 0) {
+        playingNext();
+    }
+
+    if($boardStatus["apomenoun"] == 0) {
+        if($boardStatus["next"] == '1') {
+            return "white";
+        } else {
+            return "red";
+        }
+    } else {
+        if($boardStatus["next"] == '1') {
+            return "red";
+        } else {
+            return "white";
+        }
+    }
+}
 
 
 ?>

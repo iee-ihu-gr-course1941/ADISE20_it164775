@@ -16,6 +16,95 @@ function initBoard() {
     }
 }
 
+function movesAreValid($pouli, $thesi, $xrwma) {
+    $zaria = currentRoll();
+    $zari1 = $zaria["0"];
+    $zari2 = $zaria["1"];
+
+    $playingNow = playingNow();
+    if($playingNow != $xrwma) {
+        return ["zaria" => $zaria, "playing"=> $playingNow, "kiniseis"=> getKiniseis($playingNow, $zari1, $zari2)];
+    }
+
+    if($zari1 != $zari2) {
+        $zariPouPaixtike = zariPouPaixtike();
+        if($zariPouPaixtike == 1) {
+            $moves = getKiniseis($xrwma, 0, $zari2);
+        } else if($zariPouPaixtike == 2) {
+            $moves = getKiniseis($xrwma, $zari1, 0);
+        } else {
+            $moves = getKiniseis($xrwma, $zari1, $zari2);
+        }
+    } else {
+        $moves = getKiniseis($xrwma, 0, $zari2);
+    }
+
+
+    $winner = getWinner();
+    if($winner == "red" || $winner == "white" || $moves == 1) {
+        initBoard();
+        return $winner." won2";
+    }
+
+    if($pouli == 0 && $thesi == 0 && count($moves) < 1) {
+        playingNext();
+        $zaria = getReroll();
+        $zari1 = $zaria["0"];
+        $zari2 = $zaria["1"];
+        $playingNow = playingNow();
+        return ["zaria"=> $zaria,"playing"=> $playingNow, "kiniseis"=>getKiniseis(playingNow(), $zari1, $zari2)];
+    }
+
+    if(!array_key_exists($pouli, $moves)) {
+        //invalid move;
+        return ["error"=> "invalid move", "zaria"=> ["0"=> $zari1, "1"=> $zari2],"playing"=> $xrwma, "kiniseis"=>getKiniseis($xrwma, $zari1, $zari2)];
+    }
+
+    if(in_array($thesi, $moves[$pouli])) {
+        $pouliThesi = pouliThesi($pouli);
+        if($zari1 != $zari2) {
+            if($xrwma == 'red') {
+                $newZari1 = (($pouliThesi + $zari1) == $thesi) ? 0 : (int)$zari1;
+                $newZari2 = (($pouliThesi + $zari2) == $thesi) ? 0 : (int)$zari2;
+            } else {
+                $newZari1 = (($pouliThesi - $zari1) == $thesi) ? 0 : (int)$zari1;
+                $newZari2 = (($pouliThesi - $zari2) == $thesi) ? 0 : (int)$zari2;
+            }    
+        } else {
+            $newZari1= 0;
+            $newZari2 = (int)$zari2;
+        }
+            
+        if(executeMove($pouli, $thesi, $pouliThesi, $xrwma)) {
+            $boardStatusRes = updateBoardStatus($newZari1 == 0 ? 1 : 2);
+
+            if($boardStatusRes == $xrwma) {
+                if(getKiniseis($xrwma, $zari1, $zari2) == 1) {
+                    setWinner($xrwma);
+                    initBoard();
+                    return $xrwma." won";
+                }
+                $newKiniseis = getKiniseis($xrwma, $newZari1, $newZari2);
+                return ["playing"=> $xrwma, "zaria"=> ["0"=> $zari1, "1"=> $zari2] , "kiniseis"=> $newKiniseis];
+            } else {
+                //antipalos playing
+                $playingNow = playingNow();
+                $newZaria = getReroll();
+                $newKiniseis = getKiniseis($playingNow, $newZaria["0"], $newZaria["1"]);
+                if($newKiniseis == 1) {
+                    initBoard();
+                    return getWinner()." won";
+                }    
+                return ["playing"=> $playingNow, "zaria"=> $newZaria, "kiniseis" => $newKiniseis];
+            }
+        } else {
+            return "F";
+        }
+    }
+
+    return ["error"=> "invalid move", "zaria"=> ["0"=> $zari1, "1"=> $zari2],"playing"=> $xrwma, "kiniseis"=>getKiniseis($xrwma, $zari1, $zari2)];
+}
+
 function getKiniseis($xrwma, $zari1, $zari2) {
     global $mysqli;
 
