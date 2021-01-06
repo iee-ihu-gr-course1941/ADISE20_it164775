@@ -120,6 +120,34 @@ function isPlayable() {
     $stmt->close();
 }
 
+function playingNext() {
+    global $mysqli;
+
+    $sql = "SELECT * FROM boardstatus";
+    if($result = $mysqli->query($sql)) {
+        if($row = $result->fetch_assoc()) {
+            setNext($row["next"]);
+        }
+    }	
+    else {
+            echo "Error1: ".$mysqli->error();
+    }
+}
+
+function setNext($value) {
+    global $mysqli;
+    if($value == '1') {
+        $sql = "UPDATE boardstatus SET next='2' WHERE 1";
+    } else {
+        $sql = "UPDATE boardstatus SET next='1' WHERE 1";
+    }
+
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        echo "(".$mysqli->errno.") ".$mysqli->error;
+    }    
+}
+
 function playingNow() { 
     global $mysqli;
 
