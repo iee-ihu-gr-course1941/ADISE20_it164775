@@ -18,6 +18,10 @@
         case 'start': 
                 handleStart($method);
                 break;
+        case 'board':
+                header('Content-Type: application/json');
+                print json_encode(["board"=> getBoard()]);
+                break;
         default:  
                 header("HTTP/1.1 404 Not Found");
                             exit;
