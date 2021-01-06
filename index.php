@@ -2,6 +2,7 @@
     require_once "lib/dbconnect.php";
     require_once "lib/auth.php";
     require_once "lib/game.php";
+    require_once "lib/board.php";
 
     $method = $_SERVER['REQUEST_METHOD'];
     $request = explode('/', trim($_SERVER['PATH_INFO'],'/'));
@@ -46,6 +47,7 @@
         if($method == 'POST') {
                 if(!gameStarted()) {
                         if(isPlayable()) {
+                                initBoard();
 				board();
                         } else {
                                 header("HTTP/1.1 200 OK");
@@ -57,7 +59,7 @@
                         $playingNow = playingNow();
                         $roll = currentRoll();
                         header('Content-Type: application/json');
-                        print json_encode(["message"=> "Game started"]);        
+                        print json_encode(["message"=> "Game started", "paizei" => $playingNow, "zaria" => $roll]);        
                 }
         } else {
                 header("HTTP/1.1 404 Not Found");
@@ -71,6 +73,6 @@ function board() {
         header('Content-Type: application/json');
         $playingNow = playingNow();
         $roll = getReroll();
-        print json_encode(["paizei" => $playingNow, "zaria" => $roll]);        
+        print json_encode(["paizei" => $playingNow, "zaria" => $roll, "board" => getBoard()]);        
     }
 ?>
