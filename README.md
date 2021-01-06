@@ -72,23 +72,23 @@ connected = ειναι αν ο χρηστης ειναι συνδεδεμενο�
        body: 
        
               {
-              "username": "thomas",
+               "username": "thomas",
                "password": "thomious"
-             }
+              }
 
-           {
-              "username": "makis",
-              "password": "makious"
-           }
+              {
+               "username": "makis",
+               "password": "makious"
+              }
   
   */logout
   Χρησιμοποιείται για την αποσύνδεση των χρηστών.
   POST /logout
          body:
          
-               {
+              {
                "username": "thomas"
-               }
+              }
               
               {
                 "username": "makis"
@@ -103,7 +103,7 @@ connected = ειναι αν ο χρηστης ειναι συνδεδεμενο�
   POST /move
          body: 
          
-         {
+                {
                 "pouli": 2,
                 "thesi": 2,
                 "xrwma": "red"
