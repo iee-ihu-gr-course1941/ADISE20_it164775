@@ -73,13 +73,23 @@
                 exit;
         }
     }
-
-function board() {
-        setStarted(1);
-        header("HTTP/1.1 200 OK");
-        header('Content-Type: application/json');
-        $playingNow = playingNow();
-        $roll = getReroll();
-        print json_encode(["paizei" => $playingNow, "zaria" => $roll, "board" => getBoard(), "kiniseis" => getKiniseis($playingNow, $roll["0"], $roll["1"])]);        
+    
+    function handleMove($method, $input) {
+        if($method == 'POST') {
+                header('Content-Type: application/json');
+        } else {
+                header("HTTP/1.1 404 Not Found");
+                exit;
+        }
     }
+
+        function board() {
+                setStarted(1);
+                setFirst();
+                header("HTTP/1.1 200 OK");
+                header('Content-Type: application/json');
+                $playingNow = playingNow();
+                $roll = getReroll();
+                print json_encode(["paizei" => $playingNow, "zaria" => $roll, "board" => getBoard(), "kiniseis" => getKiniseis($playingNow, $roll["0"], $roll["1"])]);        
+        }
 ?>

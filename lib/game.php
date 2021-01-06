@@ -72,9 +72,29 @@ function currentRoll() {
     }
 }
 
+function setWinner($value) {
+    global $mysqli;
+    $sql = "UPDATE boardstatus SET winner=".$value." WHERE 1";
 
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        echo "(".$mysqli->errno.") ".$mysqli->error;
+    }    
+}
 
+function getWinner() {
+    global $mysqli;
 
+    $sql = "SELECT * FROM boardstatus";
+    if($result = $mysqli->query($sql)) {
+        if($row = $result->fetch_assoc()) {
+            return $row["winnner"];
+        }
+    }	
+    else {
+            echo "Error1: ".$mysqli->error();
+    }
+}
 
 function isPlayable() {
     global $mysqli;
