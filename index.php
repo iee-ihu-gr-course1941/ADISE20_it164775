@@ -18,6 +18,9 @@
         case 'start': 
                 handleStart($method);
                 break;
+        case 'move':
+                handleMove($method, $input);
+                break;        
         case 'board':
                 header('Content-Type: application/json');
                 print json_encode(["board"=> getBoard()]);

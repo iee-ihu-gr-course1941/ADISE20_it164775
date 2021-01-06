@@ -1,5 +1,14 @@
 <?php
 
+function setFirst() {
+    global $mysqli;
+    $sql = "UPDATE boardstatus SET next=".mt_rand(1, 2)." WHERE 1";
+    $res = $mysqli->query($sql);
+    if(!$res) {
+        return false;
+    }    
+}
+
 function gameStarted() {
     global $mysqli;
 
