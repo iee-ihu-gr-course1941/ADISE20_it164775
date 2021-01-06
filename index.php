@@ -24,7 +24,7 @@
                 break;
         default:  
                 header("HTTP/1.1 404 Not Found");
-                            exit;
+                exit;
     }
 
     function handleLogin($method, $input) {
@@ -63,7 +63,7 @@
                         $playingNow = playingNow();
                         $roll = currentRoll();
                         header('Content-Type: application/json');
-                        print json_encode(["message"=> "Game started", "paizei" => $playingNow, "zaria" => $roll]);        
+                        print json_encode(["message"=> "Game started", "paizei" => $playingNow, "zaria" => $roll, "board" => getBoard(), "kiniseis" => getKiniseis($playingNow, $roll["0"], $roll["1"])]);        
                 }
         } else {
                 header("HTTP/1.1 404 Not Found");
@@ -77,6 +77,6 @@ function board() {
         header('Content-Type: application/json');
         $playingNow = playingNow();
         $roll = getReroll();
-        print json_encode(["paizei" => $playingNow, "zaria" => $roll, "board" => getBoard()]);        
+        print json_encode(["paizei" => $playingNow, "zaria" => $roll, "board" => getBoard(), "kiniseis" => getKiniseis($playingNow, $roll["0"], $roll["1"])]);        
     }
 ?>
